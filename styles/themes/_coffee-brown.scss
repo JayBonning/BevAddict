@@ -1,0 +1,34 @@
+// Coffee Brown theme
+[data-theme="coffee-brown"] {
+  // Light mode
+  --primary: 25 75% 25%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 30 40% 95%;
+  --secondary-foreground: 25 75% 15%;
+  --accent: 30 40% 95%;
+  --accent-foreground: 25 75% 15%;
+  --muted: 30 40% 95%;
+  --muted-foreground: 25 15% 45%;
+  --border: 30 40% 90%;
+  --input: 30 40% 90%;
+  --ring: 25 75% 25%;
+  --radius: 0.5rem;
+  
+  &.dark {
+    --primary: 30 40% 85%;
+    --primary-foreground: 25 75% 8%;
+    --secondary: 25 25% 20%;
+    --secondary-foreground: 30 40% 95%;
+    --accent: 25 25% 20%;
+    --accent-foreground: 30 40% 95%;
+    --background: 25 75% 8%;
+    --foreground: 30 40% 95%;
+    --card: 25 75% 8%;
+    --card-foreground: 30 40% 95%;
+    --muted: 25 25% 20%;
+    --muted-foreground: 25 15% 65%;
+    --border: 25 25% 20%;
+    --input: 25 25% 20%;
+    --ring: 30 40% 85%;
+  }
+}

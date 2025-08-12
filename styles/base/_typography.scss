@@ -1,0 +1,184 @@
+// Typography base styles
+h1, h2, h3, h4, h5, h6 {
+  font-weight: map-get($font-weights, 'semibold');
+  line-height: map-get($line-heights, 'tight');
+  color: hsl(var(--foreground));
+  margin-bottom: spacing('4');
+}
+
+h1 {
+  @include text-style('4xl', 'bold');
+  
+  @include respond-to('md') {
+    @include text-style('5xl', 'bold');
+  }
+}
+
+h2 {
+  @include text-style('3xl', 'bold');
+  
+  @include respond-to('md') {
+    @include text-style('4xl', 'bold');
+  }
+}
+
+h3 {
+  @include text-style('2xl', 'semibold');
+  
+  @include respond-to('md') {
+    @include text-style('3xl', 'semibold');
+  }
+}
+
+h4 {
+  @include text-style('xl', 'semibold');
+  
+  @include respond-to('md') {
+    @include text-style('2xl', 'semibold');
+  }
+}
+
+h5 {
+  @include text-style('lg', 'medium');
+  
+  @include respond-to('md') {
+    @include text-style('xl', 'medium');
+  }
+}
+
+h6 {
+  @include text-style('base', 'medium');
+  
+  @include respond-to('md') {
+    @include text-style('lg', 'medium');
+  }
+}
+
+p {
+  margin-bottom: spacing('4');
+  line-height: map-get($line-heights, 'relaxed');
+  color: hsl(var(--foreground));
+}
+
+small {
+  @include text-style('sm');
+  color: hsl(var(--muted-foreground));
+}
+
+strong {
+  font-weight: map-get($font-weights, 'semibold');
+}
+
+em {
+  font-style: italic;
+}
+
+code {
+  font-family: 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+  font-size: 0.875em;
+  background-color: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  padding: 0.125rem 0.25rem;
+  @include rounded('sm');
+}
+
+pre {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  @include padding('4');
+  @include rounded('md');
+  overflow-x: auto;
+  margin-bottom: spacing('4');
+  
+  code {
+    background: none;
+    padding: 0;
+  }
+}
+
+blockquote {
+  border-left: 4px solid hsl(var(--primary));
+  @include padding('4', '6');
+  @include margin('4', '0');
+  background-color: hsl(var(--muted) / 0.5);
+  font-style: italic;
+  
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Link styles
+a {
+  color: hsl(var(--primary));
+  @include transition(color);
+  
+  &:hover {
+    color: hsl(var(--primary) / 0.8);
+    text-decoration: underline;
+  }
+  
+  &:focus-visible {
+    @include focus-ring();
+  }
+}
+
+// List styles
+ul, ol {
+  @include padding('0', '0', '0', '6');
+  @include margin('0', '0', '4', '0');
+}
+
+ul {
+  list-style-type: disc;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+li {
+  margin-bottom: spacing('2');
+  line-height: map-get($line-heights, 'relaxed');
+}
+
+// Text utilities
+.text-muted {
+  color: hsl(var(--muted-foreground));
+}
+
+.text-primary {
+  color: hsl(var(--primary));
+}
+
+.text-destructive {
+  color: hsl(var(--destructive));
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.truncate {
+  @include truncate;
+}
+
+.line-clamp-2 {
+  @include line-clamp(2);
+}
+
+.line-clamp-3 {
+  @include line-clamp(3);
+}
+
+.sr-only {
+  @include sr-only;
+}

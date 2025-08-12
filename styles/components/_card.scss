@@ -1,0 +1,75 @@
+// Card component styles
+.card {
+  @include rounded('lg');
+  @include shadow('sm');
+  @include transition(all);
+  
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border: 1px solid hsl(var(--border));
+  overflow: hidden;
+  
+  &:hover {
+    @include shadow('md');
+  }
+  
+  &__header {
+    @include padding('6');
+    @include flex-column;
+    gap: spacing('2');
+    
+    &:not(:last-child) {
+      border-bottom: 1px solid hsl(var(--border));
+    }
+  }
+  
+  &__title {
+    @include text-style('lg', 'semibold', 'none');
+    color: hsl(var(--card-foreground));
+  }
+  
+  &__description {
+    @include text-style('sm');
+    color: hsl(var(--muted-foreground));
+  }
+  
+  &__content {
+    @include padding('6');
+    
+    &:not(:first-child) {
+      padding-top: 0;
+    }
+  }
+  
+  &__footer {
+    @include padding('6');
+    @include flex-between;
+    
+    &:not(:first-child) {
+      border-top: 1px solid hsl(var(--border));
+      padding-top: spacing('6');
+    }
+  }
+  
+  // Variants
+  @include variant('elevated') {
+    @include shadow('lg');
+    border: none;
+    
+    &:hover {
+      @include shadow('xl');
+      transform: translateY(-2px);
+    }
+  }
+  
+  @include variant('outline') {
+    @include shadow('none');
+    border: 2px solid hsl(var(--border));
+  }
+  
+  @include variant('ghost') {
+    @include shadow('none');
+    border: none;
+    background-color: transparent;
+  }
+}

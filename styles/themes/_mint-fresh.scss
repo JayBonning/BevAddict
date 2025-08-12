@@ -1,0 +1,34 @@
+// Mint Fresh theme
+[data-theme="mint-fresh"] {
+  // Light mode
+  --primary: 160 84% 39%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 160 60% 96%;
+  --secondary-foreground: 160 84% 15%;
+  --accent: 160 60% 96%;
+  --accent-foreground: 160 84% 15%;
+  --muted: 160 60% 96%;
+  --muted-foreground: 160 15% 45%;
+  --border: 160 60% 90%;
+  --input: 160 60% 90%;
+  --ring: 160 84% 39%;
+  --radius: 1rem;
+  
+  &.dark {
+    --primary: 160 84% 70%;
+    --primary-foreground: 160 84% 8%;
+    --secondary: 160 25% 20%;
+    --secondary-foreground: 160 60% 95%;
+    --accent: 160 25% 20%;
+    --accent-foreground: 160 60% 95%;
+    --background: 160 84% 8%;
+    --foreground: 160 60% 95%;
+    --card: 160 84% 8%;
+    --card-foreground: 160 60% 95%;
+    --muted: 160 25% 20%;
+    --muted-foreground: 160 15% 65%;
+    --border: 160 25% 20%;
+    --input: 160 25% 20%;
+    --ring: 160 84% 70%;
+  }
+}

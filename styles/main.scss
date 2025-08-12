@@ -1,0 +1,33 @@
+// Main SCSS entry point
+@charset 'utf-8';
+
+// 1. Abstracts
+@import 'abstracts/variables';
+@import 'abstracts/functions';
+@import 'abstracts/mixins';
+
+// 2. Base
+@import 'base/reset';
+@import 'base/typography';
+
+// 3. Themes
+@import 'themes/default';
+@import 'themes/beverage-orange';
+@import 'themes/coffee-brown';
+@import 'themes/mint-fresh';
+
+// 4. Layout
+@import 'layout/container';
+@import 'layout/grid';
+
+// 5. Components
+@import 'components/button';
+@import 'components/card';
+@import 'components/form';
+
+// 6. Utilities
+@import 'utilities/spacing';
+@import 'utilities/display';
+
+// 7. Vendor overrides (if needed)
+// @import 'vendor/vendor-overrides';

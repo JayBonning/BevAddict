@@ -1,0 +1,120 @@
+// Form component styles
+.form {
+  &__group {
+    @include margin('0', '0', '6', '0');
+  }
+  
+  &__label {
+    @include text-style('sm', 'medium');
+    @include margin('0', '0', '2', '0');
+    
+    display: block;
+    color: hsl(var(--foreground));
+    
+    &--required::after {
+      content: ' *';
+      color: hsl(var(--destructive));
+    }
+  }
+  
+  &__input {
+    @include padding('2', '3');
+    @include rounded('md');
+    @include text-style('sm');
+    @include transition(all);
+    @include focus-ring();
+    
+    width: 100%;
+    background-color: hsl(var(--background));
+    border: 1px solid hsl(var(--input));
+    color: hsl(var(--foreground));
+    
+    &::placeholder {
+      color: hsl(var(--muted-foreground));
+    }
+    
+    &:hover {
+      border-color: hsl(var(--ring));
+    }
+    
+    &:focus {
+      border-color: hsl(var(--ring));
+      outline: none;
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    &--error {
+      border-color: hsl(var(--destructive));
+      
+      &:focus {
+        border-color: hsl(var(--destructive));
+        box-shadow: 0 0 0 2px hsl(var(--destructive) / 0.2);
+      }
+    }
+  }
+  
+  &__textarea {
+    @extend .form__input;
+    
+    min-height: 4rem;
+    resize: vertical;
+  }
+  
+  &__select {
+    @extend .form__input;
+    
+    cursor: pointer;
+    
+    &::-ms-expand {
+      display: none;
+    }
+  }
+  
+  &__error {
+    @include text-style('sm');
+    @include margin('2', '0', '0', '0');
+    
+    color: hsl(var(--destructive));
+  }
+  
+  &__help {
+    @include text-style('sm');
+    @include margin('2', '0', '0', '0');
+    
+    color: hsl(var(--muted-foreground));
+  }
+  
+  // Checkbox and radio styles
+  &__checkbox,
+  &__radio {
+    @include flex-center;
+    
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid hsl(var(--input));
+    background-color: hsl(var(--background));
+    cursor: pointer;
+    
+    &:checked {
+      background-color: hsl(var(--primary));
+      border-color: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+    }
+    
+    &:focus {
+      @include focus-ring();
+    }
+  }
+  
+  &__checkbox {
+    @include rounded('sm');
+  }
+  
+  &__radio {
+    @include rounded('full');
+  }
+}
