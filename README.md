@@ -1,4 +1,4 @@
-# 🍹 BevRate - Beverage Rating Application
+# 🍹 Bev Addict - Beverage Rating Application
 
 A modern, full-featured beverage rating and review platform built with Next.js, Supabase, and shadcn/ui.
 
@@ -19,6 +19,8 @@ A modern, full-featured beverage rating and review platform built with Next.js, 
 - **Custom Themes** - Build and share your own color schemes
 - **Smooth Animations** - Polished user interactions
 - **Toast Notifications** - Real-time feedback with Sonner
+- **Glass Morphism** - Modern backdrop blur effects
+- **Premium Backgrounds** - Copper brewing equipment and barrel cellar imagery
 
 ### 📊 Advanced Features
 - **11 Beverage Categories** - Coffee, Tea, Beer, Wine, Cocktails, etc.
@@ -124,12 +126,21 @@ beverage-rating-app/
 
 ## 🎨 Theme System
 
-BevRate includes a powerful theme customization system:
+Bev Addict includes a powerful theme customization system:
 
 - **Pre-built Themes**: Default, Beverage Orange, Coffee Brown, Mint Fresh
 - **Theme Builder**: Create custom themes with live preview
 - **SASS Integration**: Component-based styling architecture
 - **Export/Import**: Share themes with the community
+- **Glass Morphism**: Modern backdrop blur effects throughout
+
+## 🖼️ Visual Design
+
+### Background Images
+- **Authentication Pages**: Warm copper brewing equipment imagery
+- **Main Application**: Traditional barrel cellar with aging barrels
+- **Glass Morphism**: Semi-transparent cards with backdrop blur
+- **Responsive Design**: Optimized for all screen sizes
 
 ## 🐳 Docker Support
 
@@ -187,4 +198,4 @@ If you have any questions or need help:
 
 ---
 
-**Happy Rating! 🍹**
+**Happy Rating! 🍹 Welcome to Bev Addict!**

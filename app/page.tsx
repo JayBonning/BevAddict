@@ -1,166 +1,145 @@
-import { Suspense } from "react"
 import { createClient } from "@/lib/supabase/server"
+import { redirect } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Star, Users, Coffee, TrendingUp } from "lucide-react"
 import Link from "next/link"
-import ReviewFeed from "@/components/review-feed"
+import { Plus, Users, Star, TrendingUp } from "lucide-react"
 
 export default async function HomePage() {
-  const supabase = await createClient()
-
-  let user = null
-  let connectionError = false
-
   try {
+    const supabase = await createClient()
     const {
-      data: { user: authUser },
+      data: { user },
       error,
     } = await supabase.auth.getUser()
-    if (error) {
-      console.log("Auth error:", error.message)
-      connectionError = true
-    } else {
-      user = authUser
-    }
-  } catch (error) {
-    console.log("Connection error:", error)
-    connectionError = true
-  }
 
-  if (connectionError) {
+    if (error || !user) {
+      redirect("/auth/login")
+    }
+
+    // Get user profile
+    const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+
+    // Get recent reviews count
+    const { count: reviewCount } = await supabase
+      .from("reviews")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+
+    // Get friends count
+    const { count: friendsCount } = await supabase
+      .from("friendships")
+      .select("*", { count: "exact", head: true })
+      .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`)
+      .eq("status", "accepted")
+
     return (
-      <div className="min-h-screen bg-barrel-cellar flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="relative z-10 text-center">
-          <Card className="glass-card border-white/20 max-w-md mx-auto">
+      <div className="min-h-screen bg-barrel-cellar bg-cover bg-center bg-fixed relative">
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40" />
+
+        <div className="relative z-10 container mx-auto px-4 py-8">
+          <div className="text-center mb-12">
+            <h1 className="text-5xl font-bold text-white mb-4 text-shadow-lg">Welcome to Bev Addict</h1>
+            <p className="text-white/90 text-xl text-shadow max-w-2xl mx-auto">
+              Discover, rate, and share your favorite beverages with fellow enthusiasts
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-12">
+            {/* Stats Cards */}
+            <Card className="glass-card">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-white">Your Reviews</CardTitle>
+                <Star className="h-4 w-4 text-yellow-400" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-white">{reviewCount || 0}</div>
+                <p className="text-xs text-white/70">Total beverages reviewed</p>
+              </CardContent>
+            </Card>
+
+            <Card className="glass-card">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-white">Friends</CardTitle>
+                <Users className="h-4 w-4 text-blue-400" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-white">{friendsCount || 0}</div>
+                <p className="text-xs text-white/70">Connected enthusiasts</p>
+              </CardContent>
+            </Card>
+
+            <Card className="glass-card">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-white">Streak</CardTitle>
+                <TrendingUp className="h-4 w-4 text-green-400" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-white">0</div>
+                <p className="text-xs text-white/70">Days reviewing</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-12">
+            <Link href="/reviews/new">
+              <Button className="w-full h-16 text-lg glass-card border-white/20 hover:bg-white/20">
+                <Plus className="w-6 h-6 mr-2" />
+                Add Review
+              </Button>
+            </Link>
+            <Link href="/friends">
+              <Button
+                variant="outline"
+                className="w-full h-16 text-lg glass-card border-white/20 hover:bg-white/20 bg-transparent"
+              >
+                <Users className="w-6 h-6 mr-2" />
+                Find Friends
+              </Button>
+            </Link>
+            <Link href="/themes">
+              <Button
+                variant="outline"
+                className="w-full h-16 text-lg glass-card border-white/20 hover:bg-white/20 bg-transparent"
+              >
+                <Star className="w-6 h-6 mr-2" />
+                Customize
+              </Button>
+            </Link>
+            <Link href="/setup">
+              <Button
+                variant="outline"
+                className="w-full h-16 text-lg glass-card border-white/20 hover:bg-white/20 bg-transparent"
+              >
+                <TrendingUp className="w-6 h-6 mr-2" />
+                Setup
+              </Button>
+            </Link>
+          </div>
+
+          {/* Welcome Message */}
+          <Card className="glass-card max-w-2xl mx-auto">
             <CardHeader>
-              <CardTitle className="text-white text-shadow">Connection Issue</CardTitle>
-              <CardDescription className="text-gray-200">
-                Unable to connect to the database. Please check your configuration.
+              <CardTitle className="text-white text-center">Welcome, {profile?.full_name || user.email}! 🍻</CardTitle>
+              <CardDescription className="text-white/80 text-center">
+                Ready to discover your next favorite beverage?
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button asChild className="bg-white/20 hover:bg-white/30 text-white border-white/20">
-                <Link href="/config-error">Fix Configuration</Link>
-              </Button>
+            <CardContent className="text-center">
+              <p className="text-white/90 mb-4">
+                Start by adding your first review or connecting with other beverage enthusiasts.
+              </p>
+              <Badge className="bg-amber-500/20 text-amber-200 border-amber-400/30">New Member</Badge>
             </CardContent>
           </Card>
         </div>
       </div>
     )
+  } catch (error) {
+    console.error("Homepage error:", error)
+    redirect("/config-error")
   }
-
-  return (
-    <div className="min-h-screen bg-barrel-cellar">
-      <div className="absolute inset-0 bg-black/30" />
-      <div className="relative z-10">
-        {/* Hero Section */}
-        <section className="py-20 px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl font-bold text-white mb-6 text-shadow-lg">Welcome to BevRate</h1>
-            <p className="text-xl text-gray-200 mb-8 text-shadow">
-              Discover, rate, and review your favorite beverages. Connect with fellow enthusiasts and share your taste
-              experiences.
-            </p>
-            {!user && (
-              <div className="flex gap-4 justify-center">
-                <Button asChild size="lg" className="bg-white/20 hover:bg-white/30 text-white border-white/20">
-                  <Link href="/auth/login">Get Started</Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="border-white/20 text-white hover:bg-white/10 bg-transparent"
-                >
-                  <Link href="/reviews/new">Browse Reviews</Link>
-                </Button>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* Stats Section */}
-        <section className="py-16 px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <Card className="glass-card border-white/20 text-center">
-                <CardContent className="p-6">
-                  <Coffee className="w-8 h-8 text-amber-400 mx-auto mb-2" />
-                  <h3 className="text-2xl font-bold text-white">1,000+</h3>
-                  <p className="text-gray-200">Beverages Reviewed</p>
-                </CardContent>
-              </Card>
-              <Card className="glass-card border-white/20 text-center">
-                <CardContent className="p-6">
-                  <Users className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                  <h3 className="text-2xl font-bold text-white">500+</h3>
-                  <p className="text-gray-200">Active Users</p>
-                </CardContent>
-              </Card>
-              <Card className="glass-card border-white/20 text-center">
-                <CardContent className="p-6">
-                  <Star className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
-                  <h3 className="text-2xl font-bold text-white">5,000+</h3>
-                  <p className="text-gray-200">Reviews Written</p>
-                </CardContent>
-              </Card>
-              <Card className="glass-card border-white/20 text-center">
-                <CardContent className="p-6">
-                  <TrendingUp className="w-8 h-8 text-green-400 mx-auto mb-2" />
-                  <h3 className="text-2xl font-bold text-white">4.8</h3>
-                  <p className="text-gray-200">Average Rating</p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Recent Reviews */}
-        {user && (
-          <section className="py-16 px-4">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-white mb-8 text-center text-shadow">Recent Reviews</h2>
-              <Suspense
-                fallback={
-                  <div className="text-center text-white">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
-                    <p className="mt-2">Loading reviews...</p>
-                  </div>
-                }
-              >
-                <ReviewFeed />
-              </Suspense>
-            </div>
-          </section>
-        )}
-
-        {/* CTA Section */}
-        <section className="py-20 px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <Card className="glass-card border-white/20">
-              <CardHeader>
-                <CardTitle className="text-2xl text-white text-shadow">Ready to Start Rating?</CardTitle>
-                <CardDescription className="text-gray-200 text-shadow">
-                  Join our community of beverage enthusiasts and share your taste experiences.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {user ? (
-                  <Button asChild size="lg" className="bg-white/20 hover:bg-white/30 text-white border-white/20">
-                    <Link href="/reviews/new">Write Your First Review</Link>
-                  </Button>
-                ) : (
-                  <Button asChild size="lg" className="bg-white/20 hover:bg-white/30 text-white border-white/20">
-                    <Link href="/auth/login">Sign Up Now</Link>
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-      </div>
-    </div>
-  )
 }

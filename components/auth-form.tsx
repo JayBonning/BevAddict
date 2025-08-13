@@ -1,194 +1,178 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
+import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { createClient } from "@/lib/supabase/client"
+import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
 
 export default function AuthForm() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const { toast } = useToast()
   const router = useRouter()
   const supabase = createClient()
 
-  const handleSignUp = async (formData: FormData) => {
-    setIsLoading(true)
-    setError(null)
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
 
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
-    const fullName = formData.get("fullName") as string
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-    if (!email || !password || !fullName) {
-      setError("Please fill in all fields")
-      setIsLoading(false)
-      return
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        })
+      } else if (data.user) {
+        toast({
+          title: "Success",
+          description: "Welcome back!",
+        })
+        router.push("/")
+        router.refresh()
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      })
     }
-
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-        },
-      },
-    })
-
-    if (error) {
-      setError(error.message)
-    } else {
-      toast.success("Account created! Please check your email to verify your account.")
-      router.push("/")
-    }
-
-    setIsLoading(false)
+    setLoading(false)
   }
 
-  const handleSignIn = async (formData: FormData) => {
-    setIsLoading(true)
-    setError(null)
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
 
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
 
-    if (!email || !password) {
-      setError("Please fill in all fields")
-      setIsLoading(false)
-      return
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        })
+      } else if (data.user) {
+        toast({
+          title: "Success",
+          description: "Check your email for the confirmation link!",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      })
     }
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (error) {
-      setError(error.message)
-    } else {
-      toast.success("Welcome back!")
-      router.push("/")
-    }
-
-    setIsLoading(false)
+    setLoading(false)
   }
 
   return (
-    <Tabs defaultValue="signin" className="w-full">
-      <TabsList className="grid w-full grid-cols-2 bg-white/10 border-white/20">
-        <TabsTrigger
-          value="signin"
-          className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white"
-        >
-          Sign In
-        </TabsTrigger>
-        <TabsTrigger
-          value="signup"
-          className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white"
-        >
-          Sign Up
-        </TabsTrigger>
-      </TabsList>
-
-      {error && (
-        <Alert className="mt-4 bg-red-500/20 border-red-500/50 text-white">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      <TabsContent value="signin">
-        <form action={handleSignIn} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="signin-email" className="text-white text-shadow">
-              Email
-            </Label>
-            <Input
-              id="signin-email"
-              name="email"
-              type="email"
-              placeholder="Enter your email"
-              required
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-300"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="signin-password" className="text-white text-shadow">
-              Password
-            </Label>
-            <Input
-              id="signin-password"
-              name="password"
-              type="password"
-              placeholder="Enter your password"
-              required
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-300"
-            />
-          </div>
-          <Button
-            type="submit"
-            className="w-full bg-white/20 hover:bg-white/30 text-white border-white/20"
-            disabled={isLoading}
-          >
-            {isLoading ? "Signing in..." : "Sign In"}
-          </Button>
-        </form>
-      </TabsContent>
-
-      <TabsContent value="signup">
-        <form action={handleSignUp} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="signup-name" className="text-white text-shadow">
-              Full Name
-            </Label>
-            <Input
-              id="signup-name"
-              name="fullName"
-              type="text"
-              placeholder="Enter your full name"
-              required
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-300"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="signup-email" className="text-white text-shadow">
-              Email
-            </Label>
-            <Input
-              id="signup-email"
-              name="email"
-              type="email"
-              placeholder="Enter your email"
-              required
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-300"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="signup-password" className="text-white text-shadow">
-              Password
-            </Label>
-            <Input
-              id="signup-password"
-              name="password"
-              type="password"
-              placeholder="Create a password"
-              required
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-300"
-            />
-          </div>
-          <Button
-            type="submit"
-            className="w-full bg-white/20 hover:bg-white/30 text-white border-white/20"
-            disabled={isLoading}
-          >
-            {isLoading ? "Creating account..." : "Sign Up"}
-          </Button>
-        </form>
-      </TabsContent>
-    </Tabs>
+    <Card className="w-full bg-white/95 backdrop-blur border-white/30 shadow-xl">
+      <CardHeader className="text-center">
+        <CardTitle className="text-gray-900">Welcome</CardTitle>
+        <CardDescription className="text-gray-700">Sign in to your account or create a new one</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Tabs defaultValue="signin" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 bg-gray-100">
+            <TabsTrigger value="signin" className="data-[state=active]:bg-white">
+              Sign In
+            </TabsTrigger>
+            <TabsTrigger value="signup" className="data-[state=active]:bg-white">
+              Sign Up
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="signin">
+            <form onSubmit={handleSignIn} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-900">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="bg-white/90 border-gray-300 focus:border-primary"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-gray-900">
+                  Password
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-white/90 border-gray-300 focus:border-primary"
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Signing in..." : "Sign In"}
+              </Button>
+            </form>
+          </TabsContent>
+          <TabsContent value="signup">
+            <form onSubmit={handleSignUp} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="signup-email" className="text-gray-900">
+                  Email
+                </Label>
+                <Input
+                  id="signup-email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="bg-white/90 border-gray-300 focus:border-primary"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="signup-password" className="text-gray-900">
+                  Password
+                </Label>
+                <Input
+                  id="signup-password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-white/90 border-gray-300 focus:border-primary"
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Creating account..." : "Sign Up"}
+              </Button>
+            </form>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   )
 }

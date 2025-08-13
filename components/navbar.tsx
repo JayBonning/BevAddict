@@ -39,7 +39,7 @@ export default async function Navbar() {
       <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="font-bold text-xl">
-            🍹 BevRate
+            🍹 Bev Addict
           </Link>
 
           <div className="flex items-center gap-4">
@@ -110,7 +110,7 @@ export default async function Navbar() {
     return (
       <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <span className="font-bold text-xl text-red-600">🍹 BevRate - Connection Issue</span>
+          <span className="font-bold text-xl text-red-600">🍹 Bev Addict - Connection Issue</span>
           <Link href="/config-error">
             <Button variant="outline" size="sm">
               Fix Configuration

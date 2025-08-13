@@ -10,10 +10,10 @@ import Navbar from "@/components/navbar"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "BevRate - Beverage Reviews & Ratings",
+  title: "Bev Addict - Beverage Reviews & Ratings",
   description:
     "Discover, rate, and review your favorite beverages. Connect with fellow beverage enthusiasts and share your taste experiences.",
-  keywords: "beverage, reviews, ratings, coffee, tea, drinks, taste, recommendations",
+  keywords: "beverage, reviews, ratings, coffee, tea, drinks, taste, recommendations, bev addict",
     generator: 'v0.app'
 }
 
